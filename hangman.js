@@ -51,33 +51,33 @@ var sessionWord = ''; // variable to store the generated word for the current ro
 var playerGuessArr = [];
 
 app.get('/', function(request, response){
-  response.render('index');
+  return response.render('index');
 });
 
 app.get('/easy', function(request, response){
   sessionWord = randomEasyWord;
-  response.render('main-scene', {
+  return response.render('main-scene', {
     generatedWord: sessionWord
   });
 });
 
 app.get('/normal', function(request, response){
   sessionWord = randomNormalWord;
-  response.render('main-scene', {
+  return response.render('main-scene', {
     generatedWord: sessionWord
   });
 });
 
 app.get('/hard', function(request, response){
   sessionWord = randomHardWord;
-  response.render('main-scene', {
+  return response.render('main-scene', {
     generatedWord: sessionWord
   });
 });
 
 app.post('/main-scene', function(request, response){
   playerGuessArr.push(request.body.userGuessField);
-  response.render('main-scene', {
+  return response.render('main-scene', {
     generatedWord: sessionWord,
     lettersGuessed: playerGuessArr
   })
