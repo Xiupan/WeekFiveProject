@@ -49,6 +49,47 @@ var randomHardWord = hardWords[getRandomIntInclusive(0, hardWords.length)];
 
 var sessionWord = ''; // variable to store the generated word for the current round, no matter what difficulty
 var playerGuessArr = [];
+var sessionWordSplit = [];
+var sessionWordBlanks = [];
+var positionOfGuessArr = [];
+var newPositionArr = [];
+var temp = 0;
+
+function playerGuessFunction(word, playerGuessInput){
+  sessionWordSplit = word.split('');
+  for (let p = 0; p < sessionWordSplit.length; p++) { // clones the session word as a blank array
+    sessionWordBlanks.push('_');
+  }
+  for (let i = 0; i < sessionWordSplit.length; ++i) { // compares player guess to an array of the chosen word
+    positionOfGuessArr.push(sessionWordSplit.indexOf(playerGuessInput, i));
+    console.log('Checking: ' + sessionWordSplit[i]);
+  }
+  for (let w = 0; w < positionOfGuessArr.length; ++w) { // only takes unique positions and pushes them to a new array
+    temp = positionOfGuessArr[w];
+    if(positionOfGuessArr[w] !== positionOfGuessArr[w+1]){
+      newPositionArr.push(positionOfGuessArr[w]);
+      console.log('Unique position found, pushing: ' + newPositionArr);
+    }
+  }
+  for (let q = 0; q < newPositionArr.length; ++q) { // removes the -1 at the end of the player guess array
+    if(newPositionArr[q] === -1){
+      newPositionArr.splice(q,1);
+      console.log('-1 found, splicing: ' + newPositionArr[q]);
+    }
+  }
+  console.log('Target word to apply guesses to: ' + sessionWordSplit);
+  console.log('Cloned word full of blanks: ' + sessionWordBlanks);
+  for (let r = 0; r < sessionWordBlanks.length; r++) { // nested if in a for in a for... this compares the positional array to the blank array and swaps out a blank for the actual letter if there is a match!
+    console.log('Running thru sessionWordBlanks: ' + r);
+    for (let y = 0; y < newPositionArr.length; y++) {
+      if(r === newPositionArr[y]){
+        console.log('Running thru newPositionArr: ' + newPositionArr[y]);
+        sessionWordBlanks[r] = sessionWordSplit[r];
+      }
+      console.log('Replacing blank with the guessed letter: ' + sessionWordBlanks);
+    }
+  }
+}
 
 app.get('/', function(request, response){
   return response.render('index');
@@ -56,31 +97,41 @@ app.get('/', function(request, response){
 
 app.get('/easy', function(request, response){
   sessionWord = randomEasyWord;
+  sessionWordSplit = sessionWord.split('');
   return response.render('main-scene', {
-    generatedWord: sessionWord
+    generatedWord: sessionWordSplit,
+    hiddenWord: sessionWordBlanks
   });
 });
 
 app.get('/normal', function(request, response){
   sessionWord = randomNormalWord;
+  sessionWordSplit = sessionWord.split('');
   return response.render('main-scene', {
-    generatedWord: sessionWord
+    generatedWord: sessionWordSplit,
+    hiddenWord: sessionWordBlanks
   });
 });
 
 app.get('/hard', function(request, response){
   sessionWord = randomHardWord;
+  sessionWordSplit = sessionWord.split('');
   return response.render('main-scene', {
-    generatedWord: sessionWord
+    generatedWord: sessionWordSplit,
+    hiddenWord: sessionWordBlanks
   });
 });
 
 app.post('/main-scene', function(request, response){
   playerGuessArr.push(request.body.userGuessField);
-  return response.render('main-scene', {
-    generatedWord: sessionWord,
-    lettersGuessed: playerGuessArr
-  })
+  playerGuessFunction(sessionWord, request.body.userGuessField);
+  console.log('The user\'s request: ' + request.body.userGuessField);
+  console.log('Stored word split into an array: ' + sessionWordSplit);
   console.log('Player\'s Guess: ' + playerGuessArr);
   console.log('Stored word: ' + sessionWord);
+  return response.render('main-scene', {
+    generatedWord: sessionWord,
+    lettersGuessed: playerGuessArr,
+    hiddenWord: sessionWordBlanks
+  })
 })
