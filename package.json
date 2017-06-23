@@ -5,13 +5,16 @@
   "main": "hangman.js",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "busboy": "^0.2.14",
     "express": "^4.15.3",
+    "express-session": "^1.15.3",
     "express-validator": "^3.2.0",
     "mustache-express": "^1.2.4"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "nodemon -e js,mustache ./hangman.js"
   },
   "repository": {
     "type": "git",
