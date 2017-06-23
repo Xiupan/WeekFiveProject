@@ -5,16 +5,14 @@ const parseUrl = require('parseurl');
 const bodyParser = require('body-parser');
 
 var fs = require('fs');
-
 var Busboy = require('busboy');
-
 const app = express();
 
 app.engine('mustache', mustacheExpress());
 app.set('views', './views');
 app.set('view engine', 'mustache');
 
-app.use(express.static('/public'));
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(3000, function () {
@@ -49,6 +47,31 @@ var randomEasyWord = easyWords[getRandomIntInclusive(0, easyWords.length)];
 var randomNormalWord = normalWords[getRandomIntInclusive(0, normalWords.length)];
 var randomHardWord = hardWords[getRandomIntInclusive(0, hardWords.length)];
 
-// console.log(randomEasyWord, randomNormalWord, randomHardWord);
+app.get('/', function(request, response){
+  response.render('index');
+});
 
-// console.log(easyWords.length, normalWords.length, hardWords.length);
+app.get('/easy', function(request, response){
+  response.render('main-scene', {
+    generatedWord: randomEasyWord
+  });
+});
+
+app.get('/normal', function(request, response){
+  response.render('main-scene', {
+    generatedWord: randomNormalWord
+  });
+});
+
+app.get('/hard', function(request, response){
+  response.render('main-scene', {
+    generatedWord: randomHardWord
+  });
+});
+
+app.post('/main-scene', function(request, response){
+  response.render('main-scene', {
+
+  })
+  console.log(request.body.userGuessField);
+})

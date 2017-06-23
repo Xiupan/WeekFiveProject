@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hangman: {{difficulty}}</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="diff-container">
+        <h2>{{difficulty}}</h2>
+      </div>
+      <div class="guess-number-container">
+        <h2>You have {{guessesRemaining}} guesses left.</h2>
+      </div>
+    </div>
+    <div class="main-area-container">
+      <div class="generated-word-container">
+        <h2>{{generatedWord}}</h2>
+      </div>
+      <form class="user-guess-form" action="/main-scene" method="post">
+        <input type="text" name="userGuessField" value="">
+        <button type="submit" name="submitButton">Make a Guess</button>
+      </form>
+      <div class="letters-guessed-container">
+        <h3>Letters Guessed: {{lettersGuessed}}</h3>
+      </div>
+    </div>
+  </body>
+</html>
