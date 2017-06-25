@@ -51,6 +51,7 @@ var randomHardWord = hardWords[getRandomIntInclusive(0, hardWords.length)];
 
 var sessionWord = ''; // variable to store the generated word for the current round, no matter what difficulty
 var playerGuessArr = [];
+var playerGuess = '';
 var sessionWordSplit = [];
 var sessionWordBlanks = [];
 var positionOfGuessArr = [];
@@ -58,9 +59,27 @@ var newPositionArr = [];
 var temp = 0;
 var guessCountTotal = 8;
 var sessionWordBlanksCheck = '';
+var errorResponse = 'Error'
+var playerGuessCharCode = 0;
+var playerGuessLowercase = '';
 
 function playerGuessFunction(word, playerGuessInput){
   sessionWordSplit = word.split('');
+  playerGuessCharCode = playerGuessInput.charCodeAt(0);
+  if (playerGuessInput === '') { // validates if the textbox is not empty
+    errorResponse = 'Please enter a valid guess.';
+    return;
+  } else if (playerGuessInput.length > 1) { // validates if more than one letter is entered
+    errorResponse = 'Please only guess one letter at a time.';
+    return;
+  } else if (playerGuessCharCode < 97 || playerGuessCharCode > 122){ // validates if the guess is not a letter
+    errorResponse = 'Please only use valid characters as a guess.';
+    return;
+  } else if (playerGuessArr.indexOf(playerGuessInput) != -1){ // validates that a guess is not repeated
+    errorResponse = 'You already guessed that letter.';
+    return;
+  }
+  playerGuessArr.push(playerGuessLowercase);
   for (let p = 0; p < sessionWordSplit.length; p++) { // clones the session word as a blank array
     sessionWordBlanks.push('_');
   }
@@ -85,13 +104,14 @@ function playerGuessFunction(word, playerGuessInput){
       }
     }
   }
-  if(newPositionArr.length === 0){
+  if(newPositionArr.length === 0){ // if player makes a wrong guess, deduct a guess from the total count
     guessCountTotal--;
   }
   positionOfGuessArr = []; // resets the positional arrays for the next player guess
   newPositionArr = [];
   sessionWordBlanks.length = sessionWordSplit.length; // prevents blank array from increasing every loop iteration
   sessionWordBlanksCheck = sessionWordBlanks.join('');
+  errorResponse = '';
 }
 
 function generateBlankArray(){ // function to generate the blank array
@@ -137,20 +157,43 @@ app.get('/hard', function(request, response){
 });
 
 app.get('/lose', function(request, response){
+  randomEasyWord = easyWords[getRandomIntInclusive(0, easyWords.length)];
+  randomNormalWord = normalWords[getRandomIntInclusive(0, normalWords.length)];
+  randomHardWord = hardWords[getRandomIntInclusive(0, hardWords.length)];
+  sessionWord = '';
+  playerGuessArr = [];
+  playerGuess = '';
+  sessionWordSplit = [];
+  sessionWordBlanks = [];
+  positionOfGuessArr = [];
+  newPositionArr = [];
+  guessCountTotal = 8;
   return response.render('lose');
-})
+});
 
 app.get('/win', function(request, response){
+  randomEasyWord = easyWords[getRandomIntInclusive(0, easyWords.length)];
+  randomNormalWord = normalWords[getRandomIntInclusive(0, normalWords.length)];
+  randomHardWord = hardWords[getRandomIntInclusive(0, hardWords.length)];
+  sessionWord = '';
+  playerGuessArr = [];
+  playerGuess = '';
+  sessionWordSplit = [];
+  sessionWordBlanks = [];
+  positionOfGuessArr = [];
+  newPositionArr = [];
+  guessCountTotal = 8;
   return response.render('win');
-})
+});
 
 app.post('/main-scene', function(request, response){
-  playerGuessArr.push(request.body.userGuessField);
-  playerGuessFunction(sessionWord, request.body.userGuessField);
+  playerGuess = request.body.userGuessField;
+  playerGuessLowercase = playerGuess.toLowerCase();
+  console.log(playerGuessLowercase);
+  playerGuessFunction(sessionWord, playerGuessLowercase);
   if(guessCountTotal <= 0){
     return response.redirect('/lose');
   }
-  console.log(sessionWordBlanksCheck, sessionWord, sessionWordBlanks);
   if (sessionWordBlanksCheck === sessionWord && guessCountTotal > 0) {
     return response.redirect('/win');
   }
@@ -158,6 +201,7 @@ app.post('/main-scene', function(request, response){
     generatedWord: sessionWord,
     lettersGuessed: playerGuessArr,
     hiddenWord: sessionWordBlanks,
-    guessesRemaining: guessCountTotal
-  })
+    guessesRemaining: guessCountTotal,
+    error: errorResponse
+  });
 })
