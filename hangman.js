@@ -28,9 +28,11 @@ const hardWords = [];
 for (let i = 0; i < words.length; ++i) {
   if(words[i].length >= 4 && words[i].length <= 6){
     easyWords.push(words[i]);
-  } else if(words[i].length >= 6 && words[i].length <= 8){
+  }
+  if(words[i].length >= 6 && words[i].length <= 8){
     normalWords.push(words[i]);
-  } else if(words[i].length >= 8){
+  }
+  if(words[i].length >= 8){
     hardWords.push(words[i]);
   }
 }
@@ -54,6 +56,8 @@ var sessionWordBlanks = [];
 var positionOfGuessArr = [];
 var newPositionArr = [];
 var temp = 0;
+var guessCountTotal = 8;
+var sessionWordBlanksCheck = '';
 
 function playerGuessFunction(word, playerGuessInput){
   sessionWordSplit = word.split('');
@@ -62,33 +66,40 @@ function playerGuessFunction(word, playerGuessInput){
   }
   for (let i = 0; i < sessionWordSplit.length; ++i) { // compares player guess to an array of the chosen word
     positionOfGuessArr.push(sessionWordSplit.indexOf(playerGuessInput, i));
-    console.log('Checking: ' + sessionWordSplit[i]);
   }
   for (let w = 0; w < positionOfGuessArr.length; ++w) { // only takes unique positions and pushes them to a new array
     temp = positionOfGuessArr[w];
     if(positionOfGuessArr[w] !== positionOfGuessArr[w+1]){
       newPositionArr.push(positionOfGuessArr[w]);
-      console.log('Unique position found, pushing: ' + newPositionArr);
     }
   }
   for (let q = 0; q < newPositionArr.length; ++q) { // removes the -1 at the end of the player guess array
     if(newPositionArr[q] === -1){
       newPositionArr.splice(q,1);
-      console.log('-1 found, splicing: ' + newPositionArr[q]);
     }
   }
-  console.log('Target word to apply guesses to: ' + sessionWordSplit);
-  console.log('Cloned word full of blanks: ' + sessionWordBlanks);
   for (let r = 0; r < sessionWordBlanks.length; r++) { // nested if in a for in a for... this compares the positional array to the blank array and swaps out a blank for the actual letter if there is a match!
-    console.log('Running thru sessionWordBlanks: ' + r);
     for (let y = 0; y < newPositionArr.length; y++) {
       if(r === newPositionArr[y]){
-        console.log('Running thru newPositionArr: ' + newPositionArr[y]);
         sessionWordBlanks[r] = sessionWordSplit[r];
       }
-      console.log('Replacing blank with the guessed letter: ' + sessionWordBlanks);
     }
   }
+  if(newPositionArr.length === 0){
+    guessCountTotal--;
+  }
+  positionOfGuessArr = []; // resets the positional arrays for the next player guess
+  newPositionArr = [];
+  sessionWordBlanks.length = sessionWordSplit.length; // prevents blank array from increasing every loop iteration
+  sessionWordBlanksCheck = sessionWordBlanks.join('');
+}
+
+function generateBlankArray(){ // function to generate the blank array
+  sessionWordSplit = sessionWord.split('');
+  for (let p = 0; p < sessionWordSplit.length; p++) {
+    sessionWordBlanks.push('_');
+  }
+  sessionWordBlanks.length = sessionWordSplit.length;
 }
 
 app.get('/', function(request, response){
@@ -97,41 +108,56 @@ app.get('/', function(request, response){
 
 app.get('/easy', function(request, response){
   sessionWord = randomEasyWord;
-  sessionWordSplit = sessionWord.split('');
+  generateBlankArray();
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
-    hiddenWord: sessionWordBlanks
+    hiddenWord: sessionWordBlanks,
+    guessesRemaining: guessCountTotal
   });
 });
 
 app.get('/normal', function(request, response){
   sessionWord = randomNormalWord;
-  sessionWordSplit = sessionWord.split('');
+  generateBlankArray();
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
-    hiddenWord: sessionWordBlanks
+    hiddenWord: sessionWordBlanks,
+    guessesRemaining: guessCountTotal
   });
 });
 
 app.get('/hard', function(request, response){
   sessionWord = randomHardWord;
-  sessionWordSplit = sessionWord.split('');
+  generateBlankArray();
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
-    hiddenWord: sessionWordBlanks
+    hiddenWord: sessionWordBlanks,
+    guessesRemaining: guessCountTotal
   });
 });
+
+app.get('/lose', function(request, response){
+  return response.render('lose');
+})
+
+app.get('/win', function(request, response){
+  return response.render('win');
+})
 
 app.post('/main-scene', function(request, response){
   playerGuessArr.push(request.body.userGuessField);
   playerGuessFunction(sessionWord, request.body.userGuessField);
-  console.log('The user\'s request: ' + request.body.userGuessField);
-  console.log('Stored word split into an array: ' + sessionWordSplit);
-  console.log('Player\'s Guess: ' + playerGuessArr);
-  console.log('Stored word: ' + sessionWord);
+  if(guessCountTotal <= 0){
+    return response.redirect('/lose');
+  }
+  console.log(sessionWordBlanksCheck, sessionWord, sessionWordBlanks);
+  if (sessionWordBlanksCheck === sessionWord && guessCountTotal > 0) {
+    return response.redirect('/win');
+  }
   return response.render('main-scene', {
     generatedWord: sessionWord,
     lettersGuessed: playerGuessArr,
-    hiddenWord: sessionWordBlanks
+    hiddenWord: sessionWordBlanks,
+    guessesRemaining: guessCountTotal
   })
 })
