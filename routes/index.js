@@ -81,7 +81,7 @@ app.post('/main-scene', function(request, response){
   if (functions.sessionWordBlanksCheck === functions.sessionWord && functions.guessCountTotal > 0) {
     return response.redirect('/win');
   }
-  return response.render('main-scene', {
+  response.render('main-scene', {
     generatedWord: functions.sessionWord,
     lettersGuessed: functions.playerGuessArr,
     hiddenWord: functions.sessionWordBlanks,

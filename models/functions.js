@@ -48,8 +48,8 @@ function playerGuessFunction(word, playerGuessInput){
   playerGuessCharCode = playerGuessInput.charCodeAt(0);
   if (playerGuessInput === '') { // validates if the textbox is not empty
     console.log('Please enter a valid guess.');
-    errorResponse = 'Please enter a valid guess.';
-    return;
+    errorResponse = 'Please enter a valid guess.'; // TODO: fix error messages; not working.
+    return errorResponse;
   } else if (playerGuessInput.length > 1) { // validates if more than one letter is entered
     console.log('Please only guess one letter at a time.');
     errorResponse = 'Please only guess one letter at a time.';
@@ -64,7 +64,7 @@ function playerGuessFunction(word, playerGuessInput){
     return;
   }
   playerGuessArr.push(playerGuessLowercase);
-  for (let p = 0; p < sessionWordSplit.length; p++) { // clones the session word as a blank array
+  for (let p = 0; p < sessionWordSplit.length; ++p) { // clones the session word as a blank array
     sessionWordBlanks.push('_');
   }
   for (let i = 0; i < sessionWordSplit.length; ++i) { // compares player guess to an array of the chosen word

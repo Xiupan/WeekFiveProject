@@ -17,7 +17,7 @@
       <div class="generated-word-container">
         <h2>{{#hiddenWord}}{{.}} {{/hiddenWord}}</h2>
         <h2>{{generatedWord}}</h2>
-        <h2>{{#error}}{{error}}{{/error}}</h2>
+        <h2>{{#errorResponse}}{{errorResponse}}{{/errorResponse}}</h2>
       </div>
       <form class="user-guess-form" action="/main-scene" method="post">
         <input type="text" name="userGuessField" value="">
