@@ -62,6 +62,7 @@ var sessionWordBlanksCheck = '';
 var errorResponse = 'Error'
 var playerGuessCharCode = 0;
 var playerGuessLowercase = '';
+var difficulty = '';
 
 function playerGuessFunction(word, playerGuessInput){
   sessionWordSplit = word.split('');
@@ -132,7 +133,8 @@ app.get('/easy', function(request, response){
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
     hiddenWord: sessionWordBlanks,
-    guessesRemaining: guessCountTotal
+    guessesRemaining: guessCountTotal,
+    difficulty: 'Easy'
   });
 });
 
@@ -142,7 +144,8 @@ app.get('/normal', function(request, response){
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
     hiddenWord: sessionWordBlanks,
-    guessesRemaining: guessCountTotal
+    guessesRemaining: guessCountTotal,
+    difficulty: 'Normal'
   });
 });
 
@@ -152,7 +155,8 @@ app.get('/hard', function(request, response){
   return response.render('main-scene', {
     generatedWord: sessionWordSplit,
     hiddenWord: sessionWordBlanks,
-    guessesRemaining: guessCountTotal
+    guessesRemaining: guessCountTotal,
+    difficulty: 'Hard'
   });
 });
 
@@ -189,7 +193,7 @@ app.get('/win', function(request, response){
 app.post('/main-scene', function(request, response){
   playerGuess = request.body.userGuessField;
   playerGuessLowercase = playerGuess.toLowerCase();
-  console.log(playerGuessLowercase);
+  difficulty = request.body.difficulty;
   playerGuessFunction(sessionWord, playerGuessLowercase);
   if(guessCountTotal <= 0){
     return response.redirect('/lose');
@@ -202,6 +206,7 @@ app.post('/main-scene', function(request, response){
     lettersGuessed: playerGuessArr,
     hiddenWord: sessionWordBlanks,
     guessesRemaining: guessCountTotal,
-    error: errorResponse
+    error: errorResponse,
+    difficulty: difficulty
   });
 })
