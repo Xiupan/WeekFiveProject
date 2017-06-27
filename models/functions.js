@@ -49,7 +49,7 @@ function playerGuessFunction(word, playerGuessInput){
   if (playerGuessInput === '') { // validates if the textbox is not empty
     console.log('Please enter a valid guess.');
     errorResponse = 'Please enter a valid guess.'; // TODO: fix error messages; not working.
-    return errorResponse;
+    return;
   } else if (playerGuessInput.length > 1) { // validates if more than one letter is entered
     console.log('Please only guess one letter at a time.');
     errorResponse = 'Please only guess one letter at a time.';
