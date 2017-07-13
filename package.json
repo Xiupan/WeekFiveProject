@@ -13,6 +13,9 @@
     "mustache-express": "^1.2.4"
   },
   "devDependencies": {},
+  "engines": {
+    "node": "8.1.4"
+  },
   "scripts": {
     "start": "node hangman.js",
     "test": "echo \"Error: no test specified\" && exit 1",
