@@ -19,10 +19,12 @@ app.listen(3000, function () {
   console.log('Successfully started Hangman application!');
 });
 
-const words = fs.readFileSync("/usr/share/dict/words", "utf-8").toLowerCase().split("\n");
+const words = fs.readFileSync("words.txt", "utf-8").toLowerCase().split("\n");
 const easyWords = [];
 const normalWords = [];
 const hardWords = [];
+
+console.log("words", words);
 
 // for loop that creates different arrays of varying difficulty words
 for (let i = 0; i < words.length; ++i) {
