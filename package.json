@@ -14,6 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node hangman.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "nodemon -e js,mustache ./hangman.js"
   },
