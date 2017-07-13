@@ -24,8 +24,6 @@ const easyWords = [];
 const normalWords = [];
 const hardWords = [];
 
-console.log("words", words);
-
 // for loop that creates different arrays of varying difficulty words
 for (let i = 0; i < words.length; ++i) {
   if(words[i].length >= 4 && words[i].length <= 6){
