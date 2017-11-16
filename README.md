@@ -23,5 +23,6 @@ I referenced this: https://scotch.io/tutorials/how-to-host-a-node-js-app-on-digi
 11. Then whenever you restart nginx, it should NOT give you the following error: "nginx.service: Failed to read PID from file /run/nginx.pid: Invalid argument"
 12. Now that nginx is working properly, go here: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04#set-up-nginx-as-a-reverse-proxy-server and follow the directions for the Set Up Nginx as a Reverse Proxy Server section. Substitute the 8080 port for whatever port your app will use.
 13. Refer back to https://scotch.io/tutorials/how-to-host-a-node-js-app-on-digital-ocean on how to run the app forever. Because once you close the bash terminal without Forever, it will shut down the server.
+14. Because we set up a proxy server on DigitalOcean, going to the base server IP address without the port number should go straight to the NodeJS web app. i.e. 123.456.789.123 instead of 123.456.789.123:3000
 
 Yay! We're done :D
